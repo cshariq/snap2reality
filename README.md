@@ -20,3 +20,5 @@ Once signed in, drag and drop the image with all the parts displayed, once uploa
 <img width="1728" alt="image" src="https://github.com/user-attachments/assets/e9975ab8-354f-4b83-94cd-e9bc0b900bf9" />
 
 ## Have fun!!
+
+Note: Home/landing page was made with some AI assistance :))
