@@ -1,0 +1,137 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 202, 59%, 10%;
+    --foreground: 200 15% 95%;
+    --muted: 201 20% 15%;
+    --muted-foreground: 200 15% 65%;
+    --popover: 201 50% 12%;
+    --popover-foreground: 200 15% 95%;
+    --border: 200 25% 20%;
+    --input: 200 25% 20%;
+    --card: 201 50% 12%;
+    --card-foreground: 200 15% 95%;
+    --primary: 201 65% 45%;
+    --primary-foreground: 200 15% 95%;
+    --secondary: 199 40% 35%;
+    --secondary-foreground: 200 15% 95%;
+    --accent: 203 65% 45%;
+    --accent-foreground: 200 15% 95%;
+    --destructive: 0 100% 50%;
+    --destructive-foreground: 210 40% 98%;
+    --ring: 215 20.2% 65.1%;
+    --radius: 0.5rem;
+  }
+ 
+ 
+  .dark {
+    --background:200, 58%, 8%;
+    --foreground: 200 15% 95%;
+    --muted: 201 20% 12%;
+    --muted-foreground: 200 15% 65%;
+    --accent: 203 65% 45%;
+    --accent-foreground: 200 15% 95%;
+    --popover: 201 50% 10%;
+    --popover-foreground: 200 15% 95%;
+    --border: 200 25% 15%;
+    --input: 200, 58%, 8%;
+    --card: 201 50% 10%;
+    --card-foreground: 200 15% 95%;
+    --primary: 201 65% 45%;
+    --primary-foreground: 200 15% 95%;
+    --secondary: 199 40% 35%;
+    --secondary-foreground: 200 15% 95%;
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 210 40% 98%;
+    --ring: 216 34% 17%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+  }
+}
+
+.body {
+
+}
+
+.app-name {
+ font-family: 'Inter', sans-serif;
+}
+
+#left-column {
+  padding: 10px;
+  border-radius: 10px;
+  background-color: rgb(43, 43, 54);
+}
+
+.container {
+  padding: 5px;
+}
+
+#right-column {
+
+}
+
+.generateButton {
+  border-radius: 10px;
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
+  background: rgb(2,0,36);
+  background: linear-gradient(90deg, rgb(207, 205, 255) 0%, rgb(207, 205, 255) 50%, rgba(204,247,249,1) 100%);
+  background-size: 100% 200%;
+  margin-top: 0px;
+  color: black;
+  width: 100%;
+  padding-left: 2rem; /* px-6 */ 
+  padding-right: 2rem; /* px-6 */ 
+  padding-top: 1rem; /* py-2 */ 
+  padding-bottom: 1rem; /* py-2 */ 
+  font-size: 1.125rem;
+  background-position: 0 -100%;
+  background-size: 200% auto;
+  background-position: 100% 0;
+  transition: background-position .5s ease-in-out;
+}
+
+.generateButton:hover { 
+  background-position: 0 0;
+  /* color: black;
+  background: rgb(207, 205, 255);
+  transition: all 0.5s ease-in-out, color 0.5s; */
+  /* animation: swipe 0.5s forwards; */
+}
+
+@keyframes swipe { 0% { background-position: 0% 50%; } 100% { background-position: 100% 50%; } }
+
+#dropbox {
+  height: 50vh;
+  background-color: linear-gradient(90deg, rgba(49,41,52,1) 0%, rgba(42,35,51,1) 50%, rgba(41,11,31,1) 100%);
+  border-bottom-right-radius: 0px;
+  border-bottom-left-radius: 0px;
+}
+
+.logo-text {
+  font-family: 'Inter', sans-serif !important;
+  font-weight: 500 !important;
+  text-decoration: none !important;
+}
+
+.mr-3 h-4 w-4 {
+  border-bottom-right-radius: 0px;
+  border-bottom-left-radius: 0px;
+  background-color: linear-gradient(90deg, rgba(49,41,52,1) 0%, rgba(42,35,51,1) 50%, rgba(41,11,31,1) 100%);
+}
+
+#generateContainer {
+  margin-top: 0px;
+}
