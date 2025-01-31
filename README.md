@@ -18,3 +18,5 @@ We provide 2 options for signing up, you can sign up using your email or Google 
 
 Once signed in, drag and drop the image with all the parts displayed, once uploaded Click Generate and ideas and a list of the parts in the image will show up, note that sometimes if an error occurs a default list of objects and project ideas will show up
 <img width="1728" alt="image" src="https://github.com/user-attachments/assets/e9975ab8-354f-4b83-94cd-e9bc0b900bf9" />
+
+## Have fun!!
