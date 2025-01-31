@@ -1,0 +1,495 @@
+import { useSignOut } from "@gadgetinc/react";
+import { json, LoaderFunctionArgs, redirect } from "@remix-run/node";
+import { Link, Outlet, useLoaderData, useLocation, useOutletContext } from "@remix-run/react";
+import { useState } from "react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Toaster } from "@/components/ui/toaster";
+import { User, Users, Mail, LogOut, Home, ShoppingCart, Utensils, Sprout } from "lucide-react";
+import type { RootOutletContext } from "../root";
+
+export const loader = async ({ context }: LoaderFunctionArgs) => {
+  const { session, gadgetConfig } = context;
+
+  const userId = session?.get("user");
+  const user = userId ? await context.api.user.findOne(userId) : undefined;
+
+  if (!user) {
+    return redirect(gadgetConfig.authentication!.signInPath);
+  }
+
+  return json({
+    user,
+  });
+};
+
+export type AuthOutletContext = RootOutletContext & {
+  user: any;
+};
+
+const UserMenu = () => {
+  const { user } = useLoaderData<typeof loader>();
+  const [userMenuActive, setUserMenuActive] = useState(false);
+  const signOut = useSignOut();
+
+  const getInitials = () => {
+    return (
+      (user.firstName?.slice(0, 1) ?? "") +
+      (user.lastName?.slice(0, 1) ?? "")
+    ).toUpperCase();
+  };
+
+  return (
+    <DropdownMenu
+      open={userMenuActive}
+     onOpenChange={setUserMenuActive}
+    >
+      <DropdownMenuTrigger asChild>
+        <button className="group flex items-center gap-2 rounded-full p-1 tracking-wider transition-all duration-300 hover:bg-accent/5">
+          <Avatar className="transition-all duration-300 group-hover:opacity-80">
+            {user.profilePicture?.url ? (
+              <AvatarImage src={user.profilePicture.url} alt={user.firstName ?? user.email} />
+            ) : (
+              <AvatarFallback>{getInitials()}</AvatarFallback>
+            )}
+          </Avatar>
+          <span className="text-sm font-medium transition-all duration-300 group-hover:opacity-80">
+            {user.firstName ?? user.email}
+          </span>
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="w-56">
+        <DropdownMenuItem asChild>
+          <Link
+            to="/profile" 
+            className="flex items-center"
+          >
+            <User className="mr-2 h-4 w-4" />
+            Profile
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link
+            to="/team" 
+            className="flex items-center tracking-wider transition-all duration-300 hover:text-accent hover:opacity-80"
+          >
+            <Users className="mr-2 h-4 w-4" />
+            Team
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link
+            to="/invite" 
+            className="flex items-center tracking-wider transition-all duration-300 hover:text-accent hover:opacity-80"
+          >
+            <Mail className="mr-2 h-4 w-4" />
+            Invite
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={signOut}
+          className="flex items-center tracking-wider transition-all duration-300 hover:text-red-400 hover:opacity-80 text-red-600 focus:text-red-600"
+        >
+          <LogOut className="mr-2 h-4 w-4" />
+          Sign out
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};
+
+export default function () {
+  const { user } = useLoaderData<typeof loader>();
+  const location = useLocation();
+  const rootOutletContext = useOutletContext<RootOutletContext>();
+
+  return (
+    <div className="min-h-screen flex">
+      <div className="hidden md:flex w-64 flex-col fixed inset-y-0">
+        <div className="flex flex-col flex-grow bg-background border-r">
+          <div className="h-16 flex items-center px-6 border-b">
+            <Link to="/" className="flex items-center">
+              <img src="../../camera.png" alt="Logo" className="h-9 w-auto translate-y-1 mr-2" />
+              <h1 className="text-3xl font-bold font-sans tracking-wider transition-all duration-300 hover:text-accent hover:opacity-80">
+                S2R
+              </h1>
+            </Link>
+          </div>
+          <nav className="flex-1 px-4 py-4 space-y-3.5">
+            <Link
+              to="/signed-in"
+              className={`flex items-center px-4 py-2 text-sm rounded-md racking-wider transition-colors duration-300 hover:bg-accent/50 hover:text-accent
+                ${location.pathname === "/signed-in"
+                  ? "bg-accent text-accent-foreground"
+                  : "hover:bg-accent hover:text-accent-foreground"
+                }`}
+            >
+              <Home className="mr-3 h-4 w-4" />
+              Auto
+            </Link>
+            <Link
+              to="/signed-in"
+              className={`flex items-center px-4 py-2 text-sm rounded-md racking-wider transition-colors duration-300 hover:bg-accent/50 hover:text-accent
+                ${location.pathname === "/signed-in"
+                  ? "bg-accent text-accent-foreground"
+                  : "hover:bg-accent hover:text-accent-foreground"
+                }`}
+            >
+              <Utensils className="mr-3 h-4 w-4" />
+              Recipe Generator
+            </Link>
+            <Link
+              to="/signed-in"
+              className={`flex items-center px-4 py-2 text-sm rounded-md racking-wider transition-colors duration-300 hover:bg-accent/50 hover:text-accent
+                ${location.pathname === "/signed-in"
+                  ? "bg-accent text-accent-foreground"
+                  : "hover:bg-accent hover:text-accent-foreground"
+                }`}
+            >
+              <ShoppingCart className="mr-3 h-4 w-4" />
+              Shopping Assistant
+            </Link>
+            <Link
+              to="/signed-in"
+              className={`flex items-center px-4 py-2 text-sm rounded-md racking-wider transition-colors duration-300 hover:bg-accent/50 hover:text-accent
+                ${location.pathname === "/signed-in"
+                  ? "bg-accent text-accent-foreground"
+                  : "hover:bg-accent hover:text-accent-foreground"
+                }`}
+            >
+              <Sprout className="mr-3 h-4 w-4" />
+              Sustainable Agriculture Tracker
+            </Link>
+          </nav>
+        </div>
+      </div>
+      <div className="flex-1 flex flex-col md:pl-64">
+        <header className="h-16 flex items-center justify-between px-6 border-b bg-background">
+          <div className="ml-auto">
+            <UserMenu />
+          </div>
+        </header>
+        <main className="flex-1 overflow-y-auto">
+          <div className="container mx-auto px-6 py-8">
+            <Outlet context={{ ...rootOutletContext, user } as AuthOutletContext} />
+            <Toaster />
+          </div>
+        </main>
+      </div>
+    </div>
+  );
+}
+
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { api } from "../api";
+
+export default function SignedInPage() {
+  const [isDragging, setIsDragging] = useState(false);
+  const [currentFile, setFile] = useState<File | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [extractedProducts, setExtractedProducts] = useState<string[] | null>(null); // Track extracted products
+  const [imageUrl, setImageUrl] = useState<string | null>(null); // State to store image preview URL
+  const [data, setData] = useState<any>(null); // State to store result from the action
+
+  const generatedIdeas = [
+    { title: "AI-Powered Recipe Generator 🥗", description: "Generate recipes based on ingredients from the image." },
+    { title: "Smart Shopping Assistant 🛒", description: "An app that recommends products based on the items in the image." },
+    { title: "Sustainable Agriculture Tracker 🌱", description: "Track the growth of crops using image recognition." },
+  ];
+
+  const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = () => setIsDragging(false);
+
+  const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    setIsDragging(false);
+    const droppedFile = event.dataTransfer.files[0];
+    setFile(droppedFile);
+    setImageUrl(URL.createObjectURL(droppedFile)); // Set the image preview URL
+  };
+
+  const handleFileUpload = async () => {
+    if (!currentFile) {
+      alert("No file selected.");
+      return;
+    }
+
+    setLoading(true);
+    // Add your upload logic here if needed, otherwise proceed
+
+    setLoading(false);
+  };
+
+  return (
+    <div className="container mx-auto p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+      {/* Left Column */}
+      <div className="flex flex-col space-y-4">
+        <Card
+          className={`p-6 border-2 ${isDragging ? "border-blue-500" : "border-dashed border-gray-300"}`}
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
+          onClick={() => document.getElementById("fileInput")?.click()}
+        >
+          <div className="flex flex-col items-center justify-center space-y-4">
+            {imageUrl ? (
+              <img
+                src={imageUrl}
+                alt="Preview"
+                className="w-48 h-48 object-cover rounded-md"
+              />
+            ) : (
+              <p className="text-base text-gray-500">
+                {currentFile ? `File selected: ${currentFile.name}` : "Drop a file here or click to browse"}
+              </p>
+            )}
+            <input
+              id="fileInput"
+              type="file"
+              style={{ display: "none" }}
+              onChange={(e) => {
+                const file = e.target.files?.[0] || null;
+                setFile(file);
+                if (file) {
+                  setImageUrl(URL.createObjectURL(file));
+                }
+              }}
+            />
+          </div>
+        </Card>
+
+        <div className="flex justify-center items-center">
+          <button
+            onClick={handleFileUpload}
+            className="bg-orange-500 text-white hover:bg-orange-600 rounded-full px-6 py-2 text-lg tracking-wider transition-all duration-300 hover:opacity-90"
+          >
+            Generate
+          </button>
+        </div>
+
+        {/* Displaying the Result */}
+        <div className="mt-4">
+          Inventory
+        </div>
+
+        {/* Inventory Section */}
+        <div className="space-y-4">
+          <Card className={`p-6 border-2 border-dashed border-gray-300 bg-gray-800`}>
+            <ul className="space-y-3">
+              {[
+                { name: "Apples", quantity: 10 },
+                { name: "Bananas", quantity: 6 },
+                { name: "Carrots", quantity: 15 },
+              ].map((item, index) => (
+                <li
+                  key={index}
+                  className="flex justify-between items-center p-3 bg-blue-100 rounded-md shadow-sm"
+                >
+                  <div className="flex items-center space-x-3">
+                    <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-semibold">
+                      {item.name[0].toUpperCase()}
+                    </div>
+                    <span className="font-medium text-blue-700">{item.name}</span>
+                  </div>
+                  <div className="text-blue-600 font-medium">{item.quantity}</div>
+                </li>
+              ))}
+            </ul>
+          </Card>
+        </div>
+      </div>
+
+      {/* Right Column */}
+      <div className="space-y-4">
+        {/* Project Ideas */}
+        <h1 className="text-3xl font-semibold text-white tracking-tight mb-6">Generated Project Ideas💡</h1>
+        <ul>
+          {generatedIdeas.map((idea, index) => (
+            <li key={index} className="flex flex-col space-y-2">
+              <h3 className="text-lg font-semibold">{idea.title}</h3>
+              <p className="text-base text-gray-600">{idea.description}</p>
+              <Button
+                onClick={() => alert(`More details for ${idea.title}`)}
+                className="bg-blue-500 text-white hover:bg-blue-600 rounded-full px-4 py-2 text-sm"
+              >
+                Show More
+              </Button>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
+}
+
+import { useOutletContext, Link } from "@remix-run/react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { RootOutletContext } from "../root";
+
+export default function() {
+  const { gadgetConfig } = useOutletContext<RootOutletContext>();
+
+  return (
+    <Card className="p-8">
+      <CardHeader>
+        <CardTitle className="text-xl font-semibold text-center"> Welcome to
+          Scrap2Reality</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="space-y-4">
+          <Card className="bg-muted/50">
+            <CardContent className="grid gap-4 p-4">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium">Email</span>
+                <code className="rounded bg-muted px-2 py-1 text-sm">
+                  ************            </code>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium">Password</span>
+                <code className="rounded bg-muted px-2 py-1 text-sm">
+                 ********            </code>
+              </div> 
+            </CardContent> 
+          </Card>
+          <p className="text-sm text-muted-foreground text-center">
+         Your spare items turned into innovative projects!
+          </p>
+        </div>
+        <Button
+          variant="default"
+          size="lg"
+          className="w-full"
+          asChild
+        >
+          <Link to="/sign-up">Sign up</Link>
+        </Button>
+        <Button
+          variant="outline"
+          size="lg"
+          className="w-full"
+          asChild
+        >
+          <Link to="/sign-in">Sign in</Link>
+        </Button>
+      </CardContent>
+    </Card>
+  );
+}
+
+import { useOutletContext, Link } from "@remix-run/react";
+import { ArrowRight, Lightbulb, Recycle, Users } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+
+ 
+export default function() {
+  return (
+    <main className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-24 py-12">
+      {/* Hero Section */}
+      <div className="relative rounded-3xl bg-gradient-to-r from-emerald-500 to-blue-500 p-8 md:p-12">
+        <div className="grid md:grid-cols-2 gap-8 items-center">
+          <div className="space-y-6">
+            <h1 className="text-4xl md:text-5xl font-bold text-white">
+              Transform Waste into Wonder
+            </h1>
+            <p className="text-xl text-white/90">
+              Your spare items turned into innovative projects! Join our community of creative recyclers.
+            </p>
+            <div className="space-x-4 pt-4">
+              <Button size="lg" variant="default" className="bg-white text-emerald-600 hover:scale-105 transition" asChild>
+                <Link to="/sign-up">Get Started <ArrowRight className="ml-2 h-4 w-4" /></Link>
+              </Button>
+              <Button size="lg" variant="outline" className="bg-transparent border-white text-white hover:bg-white/10 hover:scale-105 transition" asChild>
+                <Link to="/sign-in">Sign In</Link>
+              </Button>
+            </div>
+          </div>
+          <div className="relative">
+            <img src="/camera.png" alt="Recycled Camera Project" className="rounded-lg shadow-2xl motion-safe:animate-fade-up" />
+          </div>
+        </div>
+      </div>
+
+      {/* Features Section */}
+      <div className="space-y-12">
+        <div className="text-center space-y-4">
+          <h2 className="text-3xl font-bold text-slate-900">Why Choose Scrap2Reality</h2>
+          <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+            Join thousands of innovators turning everyday waste into extraordinary creations
+          </p>
+        </div>
+        <div className="grid md:grid-cols-3 gap-8">
+          {[
+            { icon: <Recycle className="h-8 w-8 text-emerald-500" />, title: "Sustainable Impact", desc: "Reduce waste while creating something new" },
+            { icon: <Lightbulb className="h-8 w-8 text-emerald-500" />, title: "Creative Freedom", desc: "Transform items into unique projects" },
+            { icon: <Users className="h-8 w-8 text-emerald-500" />, title: "Community", desc: "Connect with fellow innovators" }
+          ].map((feature, i) => (
+            <Card key={i} className="hover:scale-105 transition duration-300">
+              <CardContent className="p-6 space-y-4">
+                {feature.icon}
+                <h3 className="text-xl font-semibold">{feature.title}</h3>
+                <p className="text-slate-600">{feature.desc}</p>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
+
+      {/* How it Works */}
+      <div className="space-y-12">
+        <div className="text-center">
+          <h2 className="text-3xl font-bold text-slate-900">How It Works</h2>
+        </div>
+        <div className="grid md:grid-cols-3 gap-8">
+          {[
+            { number: "01", title: "Upload Items", desc: "Share your spare items with our community" },
+            { number: "02", title: "Get Creative", desc: "Browse project ideas or create your own" },
+            { number: "03", title: "Transform", desc: "Turn waste into functional art" }
+          ].map((step, i) => (
+            <div key={i} className="relative motion-safe:animate-fade-up" style={{ animationDelay: `${i * 200}ms` }}>
+              <div className="text-5xl font-bold text-emerald-500/20 absolute -top-8 -left-4">
+                {step.number}
+              </div>
+              <h3 className="text-xl font-semibold mb-4">{step.title}</h3>
+              <p className="text-slate-600">{step.desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Stats Section */}
+      <Card className="bg-slate-50">
+        <CardContent className="p-8">
+          <div className="grid md:grid-cols-3 gap-8 text-center">
+            {[
+              { number: "****", label: "Active Projects" },
+              { number: "****+", label: "Items Recycled" },
+              { number: "****+", label: "Community Members" }
+            ].map((stat, i) => (
+              <div key={i} className="space-y-2">
+                <div className="text-3xl font-bold text-emerald-600">{stat.number}</div>
+                <div className="text-slate-600">{stat.label}</div>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    </main>
+  );
+}
+
+
+
