@@ -1,3 +1,0 @@
-filter ($session: Session) on User [
-  where id == $session.userId
-]
